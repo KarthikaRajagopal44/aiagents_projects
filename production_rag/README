@@ -1,0 +1,157 @@
+
+
+1. Project Architecture (The "Blue-print")
+
+The system is divided into three main layers: Ingestion, Orchestration (Agent), and Monitoring.
+
+User Interface: A simple React or Streamlit frontend to input queries.
+
+API Layer (FastAPI): Acts as the gatekeeper. It receives requests and hands them off to the Agent.
+
+Worker Layer (Celery + Redis): When you upload a 100-page PDF, you don't want the API to "freeze." Celery handles the heavy processing of documents in the background.
+
+Storage Layer:
+
+Vector DB (Qdrant or ChromaDB): Stores text embeddings (Semantic search).
+
+Full-Text Search (BM25): Stores keywords (Keyword search).
+
+Agent Logic (LangGraph): The "Brain" that decides how to solve the user's problem.
+
+Observability (LangSmith): Tracks every single step the AI takes so you can debug it.
+
+
+
+2. The Execution Roadmap
+Phase 1: The "Simple RAG" (Week 1)
+
+Goal: Get text into a database and retrieve it.
+
+Environment: Set up a Python environment. Get API keys for OpenAI (LLM) and Cohere (Reranking).
+
+Ingestion: Use PyPDF to load a PDF, and RecursiveCharacterTextSplitter from LangChain to break it into chunks.
+
+Vector Store: Store these chunks in ChromaDB.
+
+Basic Retrieval: Write a script where a user asks a question, the code searches ChromaDB, and OpenAI answers.
+
+
+Phase 2: Advanced Retrieval & Hybrid Search (Week 2)
+
+Goal: Improve the quality of the data the AI sees.
+
+Hybrid Search: Don't just use Vector search. Use BM25 (keyword search) alongside it. Combine the results using Reciprocal Rank Fusion (RRF).
+
+Re-ranking: Use the Cohere Rerank API. If your search returns 20 documents, the Reranker picks the top 5 most relevant ones to show the LLM. This significantly reduces "hallucinations."
+
+Query Expansion: Use the LLM to rewrite the user's query into 3 different versions to get better search results.
+
+
+
+Phase 3: The "Agentic" Brain with LangGraph (Week 3)
+
+Goal: Move from a "Chain" to a "Loop" (Agentic behavior).
+Instead of a straight line (Search -> Answer), build a graph:
+
+Node 1 (Router): Does this question require a search? Or can I answer from memory?
+
+Node 2 (Searcher): Performs the Hybrid Search.
+
+Node 3 (Critiquer): An LLM looks at the results. It asks: "Do these documents actually answer the question?"
+
+If YES 
+→
+→
+ Go to Node 4.
+
+If NO 
+→
+→
+ Go back to Node 2 and try a different search query.
+
+Node 4 (Synthesizer): Generates the final answer.
+
+
+
+Phase 4: Productionalize & Evaluate (Week 4)
+
+Goal: Make it robust and measurable (This is what gets you the job).
+
+FastAPI: Wrap your LangGraph logic in a FastAPI endpoint.
+
+Docker: Create a Dockerfile and docker-compose.yml to run your API, Redis, and Vector DB.
+
+Evaluation (RAGAS): Create a "Golden Dataset" of 10 questions and answers. Run the Ragas library to get scores on:
+
+Faithfulness: Is the answer based on the docs?
+
+Answer Relevancy: Does it actually answer the user?
+
+Observability: Connect LangSmith. Show screenshots in your portfolio of the "traces" (the step-by-step logic the agent took).
+
+
+
+3. Detailed Workflow (How to run it)
+
+Data Ingestion Flow:
+
+User uploads PDF 
+→
+→
+ FastAPI sends task to Celery 
+→
+→
+ Celery chunks text 
+→
+→
+ Generates Embeddings 
+→
+→
+ Saves to Qdrant.
+
+Inference Flow:
+
+User asks question 
+→
+→
+ LangGraph starts 
+→
+→
+ Planner agent breaks question down 
+→
+→
+ Retriever agent pulls from Qdrant 
+→
+→
+ Reranker filters results 
+→
+→
+ Generator creates response 
+→
+→
+ LangSmith logs the event.
+
+ 
+
+4. Technical Stack to Learn (In order)
+Component	Technology to use	Why?
+Language	Python	Industry standard for AI.
+Orchestration	LangGraph	Much better than standard LangChain for production.
+Framework	FastAPI	Fast, modern, and supports asynchronous code.
+Database	Qdrant	High performance and has a great free tier.
+Optimization	DSPy	It replaces "magic" prompt engineering with code-based optimization.
+Evaluation	Ragas	Provides mathematical proof that your AI is "good."
+5. How to present this to the Hiring Manager
+
+Don't just show a GitHub link. Create a Technical Blog Post or a ReadMe that includes:
+
+Architecture Diagram: Use LucidChart or Excalidraw.
+
+The "Why": Explain why you chose Hybrid Search over Vector Search (e.g., "It improved retrieval of specific acronyms by 30%").
+
+The "Agent" Logic: Explain a scenario where the Agent failed, realized it failed, and tried again (Self-correction).
+
+The Metrics: "I achieved a 0.82 Faithfulness score using Ragas."
+
+Where to start today?
+Search for a tutorial on "LangGraph Multi-agent RAG" on YouTube or the LangChain documentation. This is the core engine of your project.
