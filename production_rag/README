@@ -77,7 +77,7 @@ I utilized the **RAGAS (Retrieval-Augmented Generation Assessment)** framework t
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/pro-rag.git
+   git clone https://github.com/KarthikaRajagopal44/aiagents_projects/production_rag.git
    cd pro-rag
    ```
 2. Set up environment variables:
