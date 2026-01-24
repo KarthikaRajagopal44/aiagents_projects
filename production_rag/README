@@ -98,8 +98,3 @@ I utilized the **RAGAS (Retrieval-Augmented Generation Assessment)** framework t
 *   **System Latency:** Used asynchronous FastAPI endpoints and background workers to ensure the UI remains responsive during large PDF uploads.
 
 ---
-
-### Contact & Portfolio
-**Author:** [Your Name]
-**LinkedIn:** [Link]
-**Website:** [Link]
