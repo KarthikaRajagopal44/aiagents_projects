@@ -1,10 +1,4 @@
 
-
-# Pro-RAG: Enterprise Agentic Search & Retrieval System
-[![Framework: LangGraph](https://img.shields.io/badge/Framework-LangGraph-blue)](https://github.com/langchain-ai/langgraph)
-[![Engine: FastAPI](https://img.shields.io/badge/API-FastAPI-green)](https://fastapi.tiangolo.com/)
-[![Database: Qdrant](https://img.shields.io/badge/VectorDB-Qdrant-red)](https://qdrant.tech/)
-
 An advanced, production-ready RAG (Retrieval-Augmented Generation) pipeline featuring an agentic self-correction loop, hybrid search (Vector + BM25), and asynchronous document processing.
 
 ## 🏗️ System Architecture
