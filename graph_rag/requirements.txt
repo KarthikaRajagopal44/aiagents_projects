@@ -1,0 +1,9 @@
+streamlit
+langchain
+langchain-huggingface
+huggingface_hub
+networkx
+matplotlib
+python-dotenv
+sentence-transformers
+pypdf
